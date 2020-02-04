@@ -131,36 +131,37 @@ long double shift_fp(long double a, long double b)
       a / (2.0 * b)
    };
 
-   printf("base numbers\n\n");
+   printf("  base numbers\n\n");
    int i = 0;
    do {
-      printf("numbers[%i] = %-+42.36Le\n", i, numbers[i]);
+      printf("  numbers[%i] = %-+42.36Le\n", i, numbers[i]);
    } while (++i < NUM_NUMBERS);
 
    long double shifts[NUM_NUMBERS];
    long double max_shift = 0;
-   printf("\n\npower 2 shifts\n\n");
+   printf("\n\n  power 2 shifts\n\n");
    i = 0;
    do {
-      shifts[i] = powl(2.0L, (long double)(unsigned long)(logl(fabsl(numbers[i])) / logl(2.0L)));
-      printf("shifts[%i] = %-+42.36Le\n", i, shifts[i]);
+      long double power_2 = logl(fabsl(numbers[i])) / logl(2.0L);
+      shifts[i] = powl(2.0L, (long double)(unsigned long)power_2);
+      printf("  shifts[%i] = %-+42.36Le power 2 = %.2f\n", i, shifts[i], power_2);
       max_shift = fmaxl(max_shift, shifts[i]);
    } while (++i < NUM_NUMBERS);
-   printf("\nmax shift = %-+42.36Le\n", max_shift);
+   printf("\n  max shift = %-+42.36Le\n", max_shift);
 
-   printf("\n\nadjusted shifts\n\n");
+   printf("\n\n  adjusted shifts\n\n");
    i = 0;
    do {
       shifts[i] /= max_shift;
-      printf("shifts[%i] = %-+42.36Le\n", i, shifts[i]);
+      printf("  shifts[%i] = %-+42.36Le\n", i, shifts[i]);
    } while (++i < NUM_NUMBERS);
 
-   printf("\n\nOutput\n\n");
+   printf("\n\n  output\n\n");
    long double output = 0.0L;
    i = 0;
    do {
       output = (output * shifts[i] + numbers[i] * shifts[i]) / shifts[i];
-      printf("output = %-+42.36Le\n", output);
+      printf("  output = %-+42.36Le\n", output);
    } while (++i < NUM_NUMBERS);
    return output;
 }
@@ -171,5 +172,5 @@ int main()
 {
    // -0.827396059946821368141165095479816291999033115785
    // +1.172603940053178694924440605973359197e+00
-   double test = ordered_fp(77617.0, 33096.0);
+   double test = shift_fp(77617.0, 33096.0);
 }
