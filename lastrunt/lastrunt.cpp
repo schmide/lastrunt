@@ -44,6 +44,8 @@ long double ordered_fp(long double a, long double b)
       a / (2.0 * b)
    };
 
+   printf("  (answer)\n  -2.0L + numbers[6] = %-+42.36Le\n\n", -2.0L + numbers[6]);
+
    printf("  base numbers\n\n");
    int i = 0;
    do {
@@ -131,6 +133,8 @@ long double shift_fp(long double a, long double b)
       a / (2.0 * b)
    };
 
+   printf("  (answer)\n  -2.0L + numbers[6] = %-+42.36Le\n\n", -2.0L + numbers[6]);
+
    printf("  base numbers\n\n");
    int i = 0;
    do {
@@ -166,11 +170,12 @@ long double shift_fp(long double a, long double b)
    return output;
 }
 
-
-
 int main()
 {
    // -0.827396059946821368141165095479816291999033115785
    // +1.172603940053178694924440605973359197e+00
-   double test = shift_fp(77617.0, 33096.0);
+   printf("\n\n  --ordered_fp--\n\n");
+   double test = ordered_fp(77617.0, 33096.0);
+   printf("\n\n  --shift_fp--\n\n");
+   test = shift_fp(77617.0, 33096.0);
 }
