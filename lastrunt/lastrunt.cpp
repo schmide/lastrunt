@@ -1,10 +1,12 @@
 ﻿/* lastrunt.cpp  
  
  problem
- f = 333.75 * b ^ 6
+ f(a,b) = 333.75 * b ^ 6
     + a ^ 2 * (11 * a ^ 2 * b ^ 2 - b ^ 6 - 121 * b ^ 4 - 2) 
     + 5.5 * b ^ 8 
     + (a / (2 * b))
+ f( 77617.0, 33096.0 ) =
+   -8.273960599468213050755593940266408026e-01
 
  solution
  make a chain of floats that shifts data
