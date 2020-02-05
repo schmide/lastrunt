@@ -38,7 +38,6 @@ schmide's analysis runt
  helps avoid some pitfalls and provides better 
  precision.
 
- Guess
  Optimal order would probably be magnitude 
  greatest to least with alternating signs
 
