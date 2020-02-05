@@ -5,7 +5,7 @@ schmide's analysis runt
 
  f( 77617.0, 33096.0) = -8.273960599468213050755593940266408026e-01
 
- In the equation above everything cancels
+ In the above equation everything cancels
  out except for 2 small values. If one were
  to expand it, 6 distinct values are produced.
  Orders 2 x 36, 3 x 29, 10, and 0. 5 of them
