@@ -15,10 +15,10 @@ schmide's analysis runt
  Why a long double will not work.
 
  Numbers of the order 10^36 require in this case
- ~2^122 bits. A long double provides 2^113 which
- only provides orders into the 10^34 range. So 
+ ~2^122 values. A long double provides 2^113, which
+ only produces orders into the 10^34 range. So 
  ~9 bits underflow.
-
+ 
 # Solution
 
  Make a chain of floats that shifts data
