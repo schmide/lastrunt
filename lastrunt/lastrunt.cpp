@@ -1,34 +1,54 @@
-﻿// lastrunt.cpp  (c compliant)
-// 
-// after trying some shifts and adjustments
-// I found that simply ordering the operations 
-// to avoid some pitfalls and provides better 
-// precision.
-//
-// guess
-// optimal order would probably be magnitude greatest 
-// to least with alternating signs
-//
-// after testing it looks like good cases are
-//
-// sorted either direction
-// sorted inside out
-//
-// worst case 
-// 
-// sorted outside in
-//
-// none of this removes the computational pitfalls
+﻿/* lastrunt.cpp  
+ 
+ problem
+ f = 333.75 * b ^ 6
+    + a ^ 2 * (11 * a ^ 2 * b ^ 2 - b ^ 6 - 121 * b ^ 4 - 2) 
+    + 5.5 * b ^ 8 
+    + (a / (2 * b))
+
+ solution
+ make a chain of floats that shifts data
+ to preserve precision. do operations in
+ long form.
+
+ split example shown in "split numbers"
+
+ without an operator function this would
+ be very tedious. c isn't going to happen
+ as it would be a dead end.
+
+ previous testing
+
+ after trying some shifts and adjustments
+ I found that simply ordering the operations 
+ helps avoid some pitfalls and provides better 
+ precision.
+
+ guess
+ optimal order would probably be magnitude 
+ greatest to least with alternating signs
+
+ after testing it looks like almost acceptable 
+ cases are
+
+ sorted either direction
+ sorted inside out
+
+ worst case 
+ 
+ sorted outside in
+
+ none of this removes the computational pitfalls
+
+ will not be solved by using bigger floats
+*/
 
 #include <iostream>
-
-// f = 333.75 * b ^ 6 + a ^ 2 * (11 * a ^ 2 * b ^ 2 - b ^ 6 - 121 * b ^ 4 - 2) + 5.5 * b ^ 8 + (a / (2 * b))
 
 #define FLOAT_TYPE double
 #define POW_FUN pow
 
-
-int compare_long_double(const void * a, const void * b)
+int compare_float_type(const void * a, const void * b)
 {
    FLOAT_TYPE diff = *(FLOAT_TYPE*)a - *(FLOAT_TYPE*)b;
    return diff == 0.0 ? 0 : diff < 0.0 ? -1 : 1;
@@ -46,8 +66,6 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
       5.5 * pow(b, 8.0),
       a / (2.0 * b)
    };
-
-   printf("  (answer)\n  -2.0 + numbers[6] = %-+42.36Le\n\n", -2.0 + numbers[6]);
 
    printf("  base numbers\n\n");
    int i = 0;
@@ -71,7 +89,7 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
       printf("  output = %-+42.36Le\n", output);
    } while (++i < NUM_NUMBERS);
 
-   qsort(numbers, NUM_NUMBERS, sizeof(numbers[0]), compare_long_double);
+   qsort(numbers, NUM_NUMBERS, sizeof(numbers[0]), compare_float_type);
 
    printf("\n\n  sorted numbers\n\n");
    i = 0;
@@ -120,6 +138,9 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
          output += numbers[upper--];
       printf("  output = %-+42.36Le\n", output);
    } while (++i < NUM_NUMBERS);
+   output = -2.0 + numbers[3];
+   printf("\n  (answer)\n  -2.0 + numbers[3] = %-+42.36Le\n\n", output);
+
    return output;
 }
 
@@ -136,8 +157,6 @@ FLOAT_TYPE shift_fp(FLOAT_TYPE a, FLOAT_TYPE b)
       a / (2.0 * b)
    };
 
-   printf("  (answer)\n  -2.0 + numbers[6] = %-+42.36Le\n\n", -2.0 + numbers[6]);
-
    printf("  base numbers\n\n");
    int i = 0;
    do {
@@ -151,9 +170,10 @@ FLOAT_TYPE shift_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    i = 0;
    do {
       FLOAT_TYPE temp;
+      bool negative = numbers[i] < 0.0;
       high[i] = numbers[i];
       ((unsigned long *)&high[i])[0] = 0;
-      temp = low[i] = numbers[i] - high[i];
+      temp = low[i] = negative ? numbers[i] - high[i] : numbers[i] + high[i]; 
       ((unsigned long *)&low[i])[0] = 0;
       lowlow[i] = temp - low[i];
       printf("  high[%i] = %-+42.36Le\n", i, high[i]);
@@ -167,14 +187,12 @@ FLOAT_TYPE shift_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    printf("\n\n  power 2 shifts\n\n");
    i = 0;
    do {
-      FLOAT_TYPE power_2 = logl(fabsl(numbers[i])) / logl(2.0);
+      FLOAT_TYPE power_2 = log(fabsl(numbers[i])) / log(2.0);
       shifts[i] = pow(2.0, (FLOAT_TYPE)(unsigned long)power_2);
       printf("  shifts[%i] = %-+42.36Le power 2 = %.2f\n", i, shifts[i], power_2);
       max_shift = fmaxl(max_shift, shifts[i]);
    } while (++i < NUM_NUMBERS);
    printf("\n  max shift = %-+42.36Le\n", max_shift);
-
-
 
    printf("\n\n  adjusted shifts\n\n");
    i = 0;
@@ -187,9 +205,12 @@ FLOAT_TYPE shift_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    FLOAT_TYPE output = 0.0;
    i = 0;
    do {
-      output = (output * shifts[i] + numbers[i] * shifts[i]) / shifts[i];
+      output += numbers[i]; 
       printf("  output = %-+42.36Le\n", output);
    } while (++i < NUM_NUMBERS);
+   output = -2.0 + numbers[6];
+   printf("\n  (answer)\n  -2.0 + numbers[6] = %-+42.36Le\n\n", output);
+
    return output;
 }
 
@@ -197,8 +218,8 @@ int main()
 {
    // -0.827396059946821368141165095479816291999033115785
    // +1.172603940053178694924440605973359197e+00
-   printf("\n\n  --ordered_fp--\n\n");
-   double test = ordered_fp(77617.0, 33096.0);
    printf("\n\n  --shift_fp--\n\n");
-   test = shift_fp(77617.0, 33096.0);
+   FLOAT_TYPE test = shift_fp(77617.0, 33096.0);
+   printf("\n\n  --ordered_fp--\n\n");
+   test = ordered_fp(77617.0, 33096.0);
 }
