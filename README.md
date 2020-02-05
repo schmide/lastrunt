@@ -19,7 +19,7 @@ schmide's shifted version of runt
  only provides orders into the 10^34 range. So 
  ~9 bits underflow.
 
-#Solution
+# Solution
 
  Make a chain of floats that shifts data
  to preserve precision. Do operations in
@@ -31,7 +31,7 @@ schmide's shifted version of runt
  be very tedious. So c is the wrong tool
  for the job.
 
-#Previous testing
+# Previous testing
 
  After trying some shifts and adjustments
  I found that simply ordering the operations 
