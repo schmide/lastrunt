@@ -2,8 +2,7 @@
 // 
 // after trying some shifts and adjustments
 // I found that simply ordering the operations 
-// to avoid some pitfalls and provides better 
-// precision.
+// to avoid pitfalls provides the best precision.
 //
 // guess
 // optimal order would probably be magnitude greatest 
@@ -20,34 +19,32 @@
 //
 // none of this removes the computational pitfalls
 
+
+
 #include <iostream>
 
 // f = 333.75 * b ^ 6 + a ^ 2 * (11 * a ^ 2 * b ^ 2 - b ^ 6 - 121 * b ^ 4 - 2) + 5.5 * b ^ 8 + (a / (2 * b))
 
-#define FLOAT_TYPE double
-#define POW_FUN pow
-
-
 int compare_long_double(const void * a, const void * b)
 {
-   FLOAT_TYPE diff = *(FLOAT_TYPE*)a - *(FLOAT_TYPE*)b;
-   return diff == 0.0 ? 0 : diff < 0.0 ? -1 : 1;
+   long double diff = *(long double*)a - *(long double*)b;
+   return diff == 0.0L ? 0 : diff < 0.0L ? -1 : 1;
 }
 
-FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
+long double ordered_fp(long double a, long double b)
 {
 #define NUM_NUMBERS 7   
-   FLOAT_TYPE numbers[NUM_NUMBERS] = {
-      333.75 * pow(b, 6.0),
-      11.0 * pow(a, 4.0) * pow(b, 2.0),
-      -pow(a, 2.0) * pow(b, 6.0),
-      -121.0 * pow(b, 4.0) * pow(a, 2.0),
-      -2.0 * pow(a, 2.0),
-      5.5 * pow(b, 8.0),
+   long double numbers[NUM_NUMBERS] = {
+      333.75L * powl(b, 6.0L),
+      11.0L * powl(a, 4.0L) * powl(b, 2.0L),
+      -powl(a, 2.0L) * powl(b, 6.0L),
+      -121.0L * powl(b, 4.0L) * powl(a, 2.0L),
+      -2.0L * powl(a, 2.0L),
+      5.5L * powl(b, 8.0L),
       a / (2.0 * b)
    };
 
-   printf("  (answer)\n  -2.0 + numbers[6] = %-+42.36Le\n\n", -2.0 + numbers[6]);
+   printf("  (answer)\n  -2.0L + numbers[6] = %-+42.36Le\n\n", -2.0L + numbers[6]);
 
    printf("  base numbers\n\n");
    int i = 0;
@@ -56,7 +53,7 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    } while (++i < NUM_NUMBERS);
 
    printf("\n\n  original order\n\n");
-   FLOAT_TYPE output = 0.0;
+   long double output = 0.0L;
    i = 0;
    do {
       output += numbers[i];
@@ -64,7 +61,7 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    } while (++i < NUM_NUMBERS);
 
    printf("\n\n  reverse order\n\n");
-   output = 0.0;
+   output = 0.0L;
    i = 0;
    do {
       output += numbers[NUM_NUMBERS - 1 - i];
@@ -80,7 +77,7 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    } while (++i < NUM_NUMBERS);
 
    printf("\n\n  sorted in order\n\n");
-   output = 0.0;
+   output = 0.0L;
    i = 0;
    do {
       output += numbers[i];
@@ -88,7 +85,7 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    } while (++i < NUM_NUMBERS);
 
    printf("\n\n  sorted reverse order\n\n");
-   output = 0.0;
+   output = 0.0L;
    i = 0;
    do {
       output += numbers[NUM_NUMBERS-1-i];
@@ -96,7 +93,7 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    } while (++i < NUM_NUMBERS);
 
    printf("\n\n  inside out\n\n");
-   output = 0.0;
+   output = 0.0L;
    i = 0;
    int upper = NUM_NUMBERS >> 1;
    int lower = upper + 1;
@@ -109,7 +106,7 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    } while (++i < NUM_NUMBERS);
 
    printf("\n\n  outside in\n\n");
-   output = 0.0;
+   output = 0.0L;
    i = 0;
    upper = NUM_NUMBERS - 1;
    lower = 0;
@@ -123,20 +120,20 @@ FLOAT_TYPE ordered_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    return output;
 }
 
-FLOAT_TYPE shift_fp(FLOAT_TYPE a, FLOAT_TYPE b)
+long double shift_fp(long double a, long double b)
 {
 #define NUM_NUMBERS 7   
-   FLOAT_TYPE numbers[NUM_NUMBERS] = {
-      333.75 * pow(b, 6.0),
-      11.0 * pow(a, 4.0) * pow(b, 2.0),
-      -pow(a, 2.0) * pow(b, 6.0),
-      -121.0 * pow(b, 4.0) * pow(a, 2.0),
-      -2.0 * pow(a, 2.0),
-      5.5 * pow(b, 8.0),
+   long double numbers[NUM_NUMBERS] = {
+      333.75L * powl(b, 6.0L),
+      11.0L * powl(a, 4.0L) * powl(b, 2.0L),
+      -powl(a, 2.0L) * powl(b, 6.0L),
+      -121.0L * powl(b, 4.0L) * powl(a, 2.0L),
+      -2.0L * powl(a, 2.0L),
+      5.5L * powl(b, 8.0L),
       a / (2.0 * b)
    };
 
-   printf("  (answer)\n  -2.0 + numbers[6] = %-+42.36Le\n\n", -2.0 + numbers[6]);
+   printf("  (answer)\n  -2.0L + numbers[6] = %-+42.36Le\n\n", -2.0L + numbers[6]);
 
    printf("  base numbers\n\n");
    int i = 0;
@@ -144,37 +141,17 @@ FLOAT_TYPE shift_fp(FLOAT_TYPE a, FLOAT_TYPE b)
       printf("  numbers[%i] = %-+42.36Le\n", i, numbers[i]);
    } while (++i < NUM_NUMBERS);
 
-   printf("\n\n  split numbers\n\n");
-   FLOAT_TYPE high[NUM_NUMBERS];
-   FLOAT_TYPE low[NUM_NUMBERS];
-   FLOAT_TYPE lowlow[NUM_NUMBERS];
-   i = 0;
-   do {
-      FLOAT_TYPE temp;
-      high[i] = numbers[i];
-      ((unsigned long *)&high[i])[0] = 0;
-      temp = low[i] = numbers[i] - high[i];
-      ((unsigned long *)&low[i])[0] = 0;
-      lowlow[i] = temp - low[i];
-      printf("  high[%i] = %-+42.36Le\n", i, high[i]);
-      printf("  low[%i] = %-+42.36Le\n", i, low[i]);
-      printf("  lowlow[%i] = %-+42.36Le\n", i, lowlow[i]);
-      printf("  check[%i] = %-+42.36Le\n", i, high[i] + low[i] + lowlow[i]);
-   } while (++i < NUM_NUMBERS);
-
-   FLOAT_TYPE shifts[NUM_NUMBERS];
-   FLOAT_TYPE max_shift = 0;
+   long double shifts[NUM_NUMBERS];
+   long double max_shift = 0;
    printf("\n\n  power 2 shifts\n\n");
    i = 0;
    do {
-      FLOAT_TYPE power_2 = logl(fabsl(numbers[i])) / logl(2.0);
-      shifts[i] = pow(2.0, (FLOAT_TYPE)(unsigned long)power_2);
+      long double power_2 = logl(fabsl(numbers[i])) / logl(2.0L);
+      shifts[i] = powl(2.0L, (long double)(unsigned long)power_2);
       printf("  shifts[%i] = %-+42.36Le power 2 = %.2f\n", i, shifts[i], power_2);
       max_shift = fmaxl(max_shift, shifts[i]);
    } while (++i < NUM_NUMBERS);
    printf("\n  max shift = %-+42.36Le\n", max_shift);
-
-
 
    printf("\n\n  adjusted shifts\n\n");
    i = 0;
@@ -184,7 +161,7 @@ FLOAT_TYPE shift_fp(FLOAT_TYPE a, FLOAT_TYPE b)
    } while (++i < NUM_NUMBERS);
 
    printf("\n\n  output\n\n");
-   FLOAT_TYPE output = 0.0;
+   long double output = 0.0L;
    i = 0;
    do {
       output = (output * shifts[i] + numbers[i] * shifts[i]) / shifts[i];
